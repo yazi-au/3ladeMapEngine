@@ -1,0 +1,6 @@
+name: 3ladeMapEngine
+version: '${project.version}'
+main: lademapengine.lademapengine.MapEngine
+api-version: 1.21
+authors: [ 3lade ]
+description: GameEngine on minecraft map
