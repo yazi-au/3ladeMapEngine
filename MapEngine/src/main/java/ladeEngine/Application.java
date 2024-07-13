@@ -1,6 +1,8 @@
 package ladeEngine;
 
 import ladeEngine.Event.EventManager;
+import ladeEngine.PlayerData.types.BoolType;
+import ladeEngine.PlayerData.types.LocationType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,11 +11,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
-public class Application {
+public abstract class Application {
     public String name;
     public String description = "No description";
     public String version;
     public String author;
+    public boolean useBukkitUpdate; //update map data,everyone use a same view
     public int width;
     public int height;
     public int ID;
@@ -25,6 +28,9 @@ public class Application {
         this.version = version;
         this.width = width;
     }
+    public abstract Application getApplication();
+    public abstract void onEnable();
+    public abstract void onDisable();
     public void addMap(GameMap map){
         this.maps.add(map);
     }
@@ -48,7 +54,14 @@ public class Application {
             ItemMeta meta = item.getItemMeta();
             ArrayList<String> lore = new ArrayList<>();
             lore.add("||"+name);
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+            player.getInventory().setItemInMainHand(item);
+            player.sendMessage("Application was installed on your main hand map");
+            player.closeInventory();
         }else{
+            ((BoolType)MapEngine.datasManager.search(player.getName()).search("setUpEnable")).v = true;
+            player.closeInventory();
             player.sendMessage(ChatColor.AQUA+"Please Click First Map Block");
         }
     }

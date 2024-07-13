@@ -1,15 +1,16 @@
 package ladeEngine.Render;
 
 import ladeEngine.Application;
+import ladeEngine.GameMap;
 
 import java.awt.image.BufferedImage;
 
 public class RenderProcess {
     BufferedImage frameBuffer;
-    public RenderProcess(Application app){
-        frameBuffer = new BufferedImage(app.width*128,app.height*128,1);
+    public RenderProcess(int w,int h){
+        frameBuffer = new BufferedImage(w*128,h*128,1);
     }
-    public void update(){
-
+    public void update(GameMap map){
+        map.draw(frameBuffer,frameBuffer.createGraphics());
     }
 }

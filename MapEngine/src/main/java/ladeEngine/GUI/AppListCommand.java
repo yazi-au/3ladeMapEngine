@@ -9,13 +9,16 @@ import org.bukkit.entity.Player;
 public class AppListCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(!(sender instanceof Player)) System.out.println(ChatColor.RED + "You cant use this command!");
+        if(!(sender instanceof Player)) {
+            System.out.println(ChatColor.RED + "You cant use this command!");
+            return false;
+        }
         if(!((Player) sender).isOp()) ((Player) sender).sendMessage(ChatColor.RED + "You cant use this command!");
         if(args.length == 0) {
             ApplicationsGUI.show((Player) sender, 0);
         }else{
             if(!isNumeric(args[0])) ApplicationsGUI.show((Player) sender, 0);
-            ApplicationsGUI.show((Player) sender, Integer.parseInt(args[0]));
+            ApplicationsGUI.show((Player) sender, Math.max(Integer.parseInt(args[0]), 0));
         }
         return true;
     }

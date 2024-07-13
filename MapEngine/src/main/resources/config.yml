@@ -1,0 +1,7 @@
+Optimize:
+  #Save Application Data In This Range(Block)
+  #Out of this range,application data will be deleted
+  KeepDataRange: 10
+  #Player cant rotate any full map,optimize when frequently action
+  CantRotateFullMap: true
+Misc:

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class ApplicationsGUI {
     public static void show(Player player,int page){
-        Inventory inv = Bukkit.createInventory(null,54, ChatColor.UNDERLINE+"| ladeEngine.Application list");
+        Inventory inv = Bukkit.createInventory(null,54, ChatColor.UNDERLINE+"| MapEngine Application List");
         inv.setItem(45,getLastPageButton(page));
         inv.setItem(46,getLastPageButton(page));
         inv.setItem(47,getLastPageButton(page));
@@ -26,7 +26,7 @@ public class ApplicationsGUI {
         inv.setItem(52,getNextPageButton(page));
         inv.setItem(53,getNextPageButton(page));
         for (int i = 0; i < 45; i++){
-            if(MapEngine.apps.size() < i+45*page) break;
+            if(MapEngine.apps.size() <= i+45*page) break;
             inv.addItem(MapEngine.apps.get(i+45*page).getShowItem());
         }
         player.openInventory(inv);
@@ -54,7 +54,8 @@ public class ApplicationsGUI {
     public static ItemStack getPageCount(int page){
         ItemStack lastPage = new ItemStack(Material.WRITABLE_BOOK);
         ItemMeta meta = lastPage.getItemMeta();
-        meta.setDisplayName("CurrentPage: "+(page+1));
+        meta.setDisplayName(ChatColor.AQUA + "CurrentPage: "+(page+1));
+        lastPage.setItemMeta(meta);
         return lastPage;
     }
 }

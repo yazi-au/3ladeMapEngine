@@ -1,16 +1,18 @@
 package ladeEngine;
 
 import ladeEngine.Event.EventManager;
+import ladeEngine.Monitor.Monitor;
 import ladeEngine.Render.RenderProcess;
 
 public class RunningProcess {
-    Application app;
-    //Monitor
-    EventManager eventManager;
-    RenderProcess renderProcess;
-    public RunningProcess(Application app){
+    public Application app;
+    Monitor monitor;
+    public EventManager eventManager;
+    public RenderProcess renderProcess;
+    public RunningProcess(Application app,Monitor monitor){
         this.app = app;
+        this.monitor = monitor;
         eventManager = new EventManager();
-        renderProcess = new RenderProcess(app);
+        renderProcess = new RenderProcess(app.width,app.height);
     }
 }

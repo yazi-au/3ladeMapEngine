@@ -23,7 +23,12 @@ public class GUIListener implements Listener {
                 player.performCommand("meapps "+e.getCurrentItem().getItemMeta().getLore().get(0));
                 return;
             }
-            Application app = MapEngine.apps.get(Integer.valueOf(e.getCurrentItem().getItemMeta().getLore().get(4)));
+            if(e.getCurrentItem().getItemMeta().getDisplayName().startsWith(ChatColor.AQUA + "Current")){
+                return;
+            }
+            if(e.getCurrentItem().getItemMeta().getLore() == null) return;
+            if(e.getCurrentItem().getItemMeta().getLore().size() < 5) return;
+            Application app = MapEngine.apps.get(Integer.parseInt(e.getCurrentItem().getItemMeta().getLore().get(4)));
             app.setMap(player);
         }
     }
