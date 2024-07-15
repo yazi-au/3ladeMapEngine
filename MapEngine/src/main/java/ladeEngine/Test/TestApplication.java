@@ -1,6 +1,7 @@
 package ladeEngine.Test;
 
 import ladeEngine.Application;
+import ladeEngine.GameMap;
 
 public class TestApplication extends Application {
     public TestApplication() {
@@ -15,6 +16,8 @@ public class TestApplication extends Application {
     @Override
     public void onEnable() {
         System.out.println("TestApplication Start");
+        GameMap map = new GameMap();
+        maps.add(map);
     }
 
     @Override

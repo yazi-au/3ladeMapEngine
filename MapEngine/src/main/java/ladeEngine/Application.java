@@ -16,7 +16,6 @@ public abstract class Application {
     public String description = "No description";
     public String version;
     public String author;
-    public boolean useBukkitUpdate; //update map data,everyone use a same view
     public int width;
     public int height;
     public int ID;

@@ -23,7 +23,7 @@ public class PlaneMonitorManager {
         for (int i = 0; i < activeMonitors.size(); i++) {
             ArrayList<Integer> mapIDs = activeMonitors.get(i).mapIDs;
             for (int j = 0; j < mapIDs.size(); j++) {
-                if(mapIDs.get(i) == id) return true;
+                if(mapIDs.get(j) == id) return true;
             }
         }
         return false;
@@ -31,35 +31,8 @@ public class PlaneMonitorManager {
     public static ArrayList<PlaneMonitor> getNearMonitor(Location location,int range){
         ArrayList<PlaneMonitor> planeMonitors = new ArrayList<>();
         int distance = 0;
-        int x = 0,y = 0,z = 0;
         for (int i = 0; i < activeMonitors.size(); i++) {
-            switch(activeMonitors.get(i).face){
-                case EAST:
-                case WEST:
-                    x = Math.abs(location.getBlockX()-activeMonitors.get(i).location.getBlockX());
-                    y = location.getBlockY() > activeMonitors.get(i).location.getBlockY() ? location.getBlockY() - activeMonitors.get(i).location.getBlockY() :
-                            location.getBlockY() < activeMonitors.get(i).location.getBlockY()-activeMonitors.get(i).h ? location.getBlockY() - activeMonitors.get(i).location.getBlockY()+activeMonitors.get(i).h : 0;
-                    z = location.getBlockZ() < activeMonitors.get(i).location.getBlockZ() ? location.getBlockZ() - activeMonitors.get(i).location.getBlockZ() :
-                            location.getBlockZ() > activeMonitors.get(i).location.getBlockZ()+activeMonitors.get(i).w ? location.getBlockZ() - activeMonitors.get(i).location.getBlockZ()-activeMonitors.get(i).w : 0;
-                    distance = (int) Math.sqrt(x*x + y*y + z*z);
-                case SOUTH:
-                case NORTH:
-                    z = Math.abs(location.getBlockZ()-activeMonitors.get(i).location.getBlockZ());
-                    y = location.getBlockY() > activeMonitors.get(i).location.getBlockY() ? location.getBlockY() - activeMonitors.get(i).location.getBlockY() :
-                            location.getBlockY() < activeMonitors.get(i).location.getBlockY()-activeMonitors.get(i).h ? location.getBlockY() - activeMonitors.get(i).location.getBlockY()+activeMonitors.get(i).h : 0;
-                    x = location.getBlockX() < activeMonitors.get(i).location.getBlockX() ? location.getBlockX() - activeMonitors.get(i).location.getBlockX() :
-                            location.getBlockX() > activeMonitors.get(i).location.getBlockX()+activeMonitors.get(i).w ? location.getBlockX() - activeMonitors.get(i).location.getBlockX()-activeMonitors.get(i).w : 0;
-                    distance = (int) Math.sqrt(x*x + y*y + z*z);
-                case UP:
-                case DOWN:
-                    x = location.getBlockX() < activeMonitors.get(i).location.getBlockX() ? location.getBlockX() - activeMonitors.get(i).location.getBlockX() :
-                            location.getBlockX() > activeMonitors.get(i).location.getBlockX()+activeMonitors.get(i).w ? location.getBlockX() - activeMonitors.get(i).location.getBlockX()-activeMonitors.get(i).w : 0;
-                    z = location.getBlockZ() < activeMonitors.get(i).location.getBlockZ() ? location.getBlockZ() - activeMonitors.get(i).location.getBlockZ() :
-                            location.getBlockZ() > activeMonitors.get(i).location.getBlockZ()+activeMonitors.get(i).w ? location.getBlockZ() - activeMonitors.get(i).location.getBlockZ()-activeMonitors.get(i).w : 0;
-
-                default:
-                    distance = 10000;
-            }
+            distance = activeMonitors.get(i).getDistance(activeMonitors.get(i).face,location);
             if(distance <= range){
                 planeMonitors.add(activeMonitors.get(i));
             }

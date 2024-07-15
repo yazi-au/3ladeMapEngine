@@ -31,6 +31,7 @@ public class DatasManager {
     public void delete(String name){
         for (int i = 0; i < datas.size(); i++) {
             if(datas.get(i).player.getName().equals(name)){
+                datas.get(i).datas.clear();
                 datas.remove(i);
                 return;
             }

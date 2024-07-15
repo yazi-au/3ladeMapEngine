@@ -52,7 +52,7 @@ public class SetupMap implements Listener {
                         int maxY = Math.max(start.getBlockY(), end.getBlockY());
                         int minZ = Math.min(start.getBlockZ(), end.getBlockZ());
                         int maxZ = Math.max(start.getBlockZ(), end.getBlockZ());
-                        PlaneMonitor monitor = new PlaneMonitor(start.getChunk().getX(),start.getChunk().getZ());
+                        PlaneMonitor monitor = new PlaneMonitor(start.getChunk().getX(),start.getChunk().getZ(),MapEngine.apps.get(0));
                         monitor.face = itemFrame.getAttachedFace();
                         monitor.location = new Location(start.getWorld(),minX,maxY,minZ);
                         if(maxX-minX == 0){
@@ -66,8 +66,8 @@ public class SetupMap implements Listener {
                             monitor.h = maxZ-minZ;
                         }
                         for (int x = minX; x <= maxX; x++) {
-                            for (int y = maxY; y >= minY; y--) {
-                                for (int z = minZ; z <= maxZ; z++) {
+                            for (int z = minZ; z <= maxZ; z++) {
+                                for (int y = maxY; y >= minY; y--) {
                                     Location location = new Location(start.getWorld(), x, y, z);
                                     if (getItemFrameOnBlock(location) != null) {
                                         ItemFrame itemFrame1 = getItemFrameOnBlock(location);
