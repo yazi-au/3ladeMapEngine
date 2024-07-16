@@ -6,9 +6,9 @@ import ladeEngine.RunningProcess;
 
 import java.util.ArrayList;
 
-public class RunningProcessType extends DataValue {
+public class RunningProcessListType extends DataValue {
     public ArrayList<RunningProcess> v = new ArrayList<>();
-    public RunningProcessType(String name, ArrayList<RunningProcess> value, boolean save){
+    public RunningProcessListType(String name, ArrayList<RunningProcess> value, boolean save){
         super.name = name;
         super.noSave = !save;
         this.v = value;
@@ -20,5 +20,6 @@ public class RunningProcessType extends DataValue {
 
     @Override
     public void loadData(String data) {
+        v = new ArrayList<>();
     }
 }

@@ -16,7 +16,7 @@ import java.util.Collection;
 public class SendMap {
     public static void sendMap(Player player, int id, BufferedImage image, Collection<MapIcon> cursors){
         WorldMap.b mapSection = new WorldMap.b(0, 0, 128, 128, MapPalette.imageToBytes(image));
-        PacketPlayOutMap packet = new PacketPlayOutMap(id,(byte)4,false,cursors, mapSection);
+        PacketPlayOutMap packet = new PacketPlayOutMap(id, (byte)(4+4),false,cursors, mapSection);
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         entityPlayer.b.a(packet);
     }

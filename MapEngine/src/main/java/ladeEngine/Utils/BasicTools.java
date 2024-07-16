@@ -7,6 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
@@ -23,6 +26,23 @@ import java.util.List;
 
 public class BasicTools {
     private static HashMap<Integer,Float> scin = new HashMap<>();
+    public static boolean isLoreStartingWith(Player player, String prefix) {
+        return isLoreStartingWith(player.getInventory().getItemInMainHand(), prefix) ||
+                isLoreStartingWith(player.getInventory().getItemInOffHand(), prefix);
+    }
+    private static boolean isLoreStartingWith(ItemStack item, String prefix) {
+        if (item != null && item.getType() == Material.FILLED_MAP) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta instanceof MapMeta) {
+                List<String> lore = meta.getLore();
+                if (lore != null && !lore.isEmpty()) {
+                    String lastLine = lore.get(lore.size() - 1);
+                    return lastLine.startsWith(prefix);
+                }
+            }
+        }
+        return false;
+    }
     public static BufferedImage readImage(String imagePath) throws IOException {
         File file = new File(imagePath);
         return ImageIO.read(file);

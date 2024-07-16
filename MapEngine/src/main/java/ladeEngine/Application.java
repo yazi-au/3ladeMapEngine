@@ -42,7 +42,7 @@ public abstract class Application {
         lore.add(ChatColor.DARK_GRAY + "Description: "+description);
         lore.add(ChatColor.DARK_GRAY + "Version: "+version);
         lore.add(ChatColor.DARK_GRAY + "Author: "+author);
-        lore.add(ChatColor.DARK_GRAY + "-[3lade Map Engine ladeEngine.Application]-");
+        lore.add(ChatColor.DARK_GRAY + "-[3lade Map Engine ladeEngine Application]-");
         lore.add(""+ID);
         meta.setLore(lore);
         item.setItemMeta(meta);
