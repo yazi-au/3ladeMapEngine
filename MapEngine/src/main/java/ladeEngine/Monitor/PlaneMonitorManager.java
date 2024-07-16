@@ -33,6 +33,7 @@ public class PlaneMonitorManager {
         int distance = 0;
         for (int i = 0; i < activeMonitors.size(); i++) {
             distance = activeMonitors.get(i).getDistance(activeMonitors.get(i).face,location);
+            System.out.println("Distance: "+ distance);
             if(distance <= range){
                 planeMonitors.add(activeMonitors.get(i));
             }

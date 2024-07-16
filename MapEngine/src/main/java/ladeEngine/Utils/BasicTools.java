@@ -10,12 +10,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class BasicTools {
     private static HashMap<Integer,Float> scin = new HashMap<>();
+    public static BufferedImage readImage(String imagePath) throws IOException {
+        File file = new File(imagePath);
+        return ImageIO.read(file);
+    }
+
     public static ArrayList<Player> getOnlinePlayers(){
         return new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
     }

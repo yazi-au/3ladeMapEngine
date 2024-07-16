@@ -3,6 +3,7 @@ package ladeEngine;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import ladeEngine.PlayerData.types.RunningProcessType;
+import ladeEngine.PlayerData.types.StringType;
 import ladeEngine.Test.TestApplication;
 import ladeEngine.GUI.AppListCommand;
 import ladeEngine.GUI.GUIListener;
@@ -44,9 +45,10 @@ public final class MapEngine extends JavaPlugin {
         PlaneMonitorManager.init();
         datasManager = new DatasManager(getDataFolder() + "\\players\\",this);
         datasManager.baseData.add(new BoolType("setUpEnable",false,false));
+        datasManager.baseData.add(new StringType("setUpApp",null,false));
         datasManager.baseData.add(new LocationType("setUp1",null,false));
         datasManager.baseData.add(new RunningProcessType("running",new ArrayList<>(),false));
-        apps.add(new TestApplication());
+        registerApp(new TestApplication());
         LoadProcessListener.monitorActiveTask(); //Run scan task
     }
 
@@ -62,5 +64,15 @@ public final class MapEngine extends JavaPlugin {
             }
         }
         return null;
+    }
+
+    public static void registerApp(Application app){
+        apps.add(app);
+    }
+    public static void unregisterApp(String name){
+        Application app = searchApp(name);
+        if(app != null){
+            apps.remove(app);
+        }
     }
 }

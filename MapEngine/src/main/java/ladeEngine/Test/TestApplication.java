@@ -5,7 +5,7 @@ import ladeEngine.GameMap;
 
 public class TestApplication extends Application {
     public TestApplication() {
-        super("test","no version","yazi_au",1,1);
+        super("test","no version","yazi_au",2,2);
     }
 
     @Override

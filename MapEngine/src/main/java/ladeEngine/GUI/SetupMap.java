@@ -1,11 +1,13 @@
 package ladeEngine.GUI;
 
+import ladeEngine.Application;
 import ladeEngine.MapEngine;
 import ladeEngine.Monitor.PlaneMonitor;
 import ladeEngine.Monitor.PlaneMonitorManager;
 import ladeEngine.PlayerData.PlayerData;
 import ladeEngine.PlayerData.types.BoolType;
 import ladeEngine.PlayerData.types.LocationType;
+import ladeEngine.PlayerData.types.StringType;
 import ladeEngine.Utils.M3IVector;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -53,21 +55,22 @@ public class SetupMap implements Listener {
                         int minZ = Math.min(start.getBlockZ(), end.getBlockZ());
                         int maxZ = Math.max(start.getBlockZ(), end.getBlockZ());
                         PlaneMonitor monitor = new PlaneMonitor(start.getChunk().getX(),start.getChunk().getZ(),MapEngine.apps.get(0));
+                        monitor.appBase = MapEngine.searchApp(((StringType)MapEngine.datasManager.search(player.getName()).search("setUpApp")).v);
                         monitor.face = itemFrame.getAttachedFace();
                         monitor.location = new Location(start.getWorld(),minX,maxY,minZ);
                         if(maxX-minX == 0){
-                            monitor.w = maxZ-minZ;
-                            monitor.h = maxY-minY;
+                            monitor.w = maxZ-minZ+1;
+                            monitor.h = maxY-minY+1;
                         }else if(maxZ-minZ == 0){
-                            monitor.w = maxX-minX;
-                            monitor.h = maxY-minY;
+                            monitor.w = maxX-minX+1;
+                            monitor.h = maxY-minY+1;
                         }else{
-                            monitor.w = maxX-minX;
-                            monitor.h = maxZ-minZ;
+                            monitor.w = maxX-minX+1;
+                            monitor.h = maxZ-minZ+1;
                         }
-                        for (int x = minX; x <= maxX; x++) {
+                        for (int y = maxY; y >= minY; y--) {
                             for (int z = minZ; z <= maxZ; z++) {
-                                for (int y = maxY; y >= minY; y--) {
+                                for (int x = minX; x <= maxX; x++) {
                                     Location location = new Location(start.getWorld(), x, y, z);
                                     if (getItemFrameOnBlock(location) != null) {
                                         ItemFrame itemFrame1 = getItemFrameOnBlock(location);
@@ -75,6 +78,7 @@ public class SetupMap implements Listener {
                                         if (item1.getType() == Material.FILLED_MAP) {
                                             MapMeta mapMeta = (MapMeta) item1.getItemMeta();
                                             monitor.mapIDs.add(mapMeta.getMapView().getId());
+                                            System.out.println(mapMeta.getMapView().getId());
                                         } else {
                                             player.sendMessage(ChatColor.RED + "You must choose a plane which fulled map!");
                                             ((BoolType) data.search("setUpEnable")).v = false;
@@ -90,6 +94,7 @@ public class SetupMap implements Listener {
                                 }
                             }
                         }
+                        monitor.sort();
                         PlaneMonitorManager.addMonitor(monitor);
                         player.sendMessage(ChatColor.DARK_GREEN + "Successful set up this application! Count:"+monitor.mapIDs.size());
                         ((BoolType) data.search("setUpEnable")).v = false;

@@ -49,21 +49,21 @@ public class PlaneMonitor implements Monitor{
         for (int i = 7; i < a.length; i++) {
             mapIDs.add(Integer.parseInt(a[i]));
         }
-        sort();
     }
 
-    private void sort(){
+    public void sort(){
+        System.out.println("w:"+w+"h:"+h);
         switch (face) {
-            case NORTH:
+            case SOUTH:
             case WEST:
                 for (int i = 0; i < h; i++) {
                     ArrayList<Integer> back = new ArrayList<>();
                     for (int j = 0; j < w; j++) {
-                        back.add(mapIDs.get(h * w + j));
+                        back.add(mapIDs.get(i * w + j));
                     }
                     Collections.reverse(back);
                     for (int j = 0; j < w; j++) {
-                        back.set(mapIDs.get(h * w + j), back.get(j));
+                        mapIDs.set(i * w + j, back.get(j));
                     }
                 }
         }
@@ -81,6 +81,7 @@ public class PlaneMonitor implements Monitor{
                 z = location1.getBlockZ() < location.getBlockZ() ? location1.getBlockZ() - location.getBlockZ() :
                         location1.getBlockZ() > location.getBlockZ() + w ? location1.getBlockZ() - location.getBlockZ() - w : 0;
                 distance = (int) Math.sqrt(x * x + y * y + z * z);
+                break;
             case SOUTH:
             case NORTH:
                 z = location1.getBlockZ() - location.getBlockZ();
@@ -89,6 +90,7 @@ public class PlaneMonitor implements Monitor{
                 x = location1.getBlockX() < location.getBlockX() ? location1.getBlockX() - location.getBlockX() :
                         location1.getBlockX() > location.getBlockX() + w ? location1.getBlockX() - location.getBlockX() - w : 0;
                 distance = (int) Math.sqrt(x * x + y * y + z * z);
+                break;
             case UP:
             case DOWN:
                 x = location1.getBlockX() < location.getBlockX() ? location1.getBlockX() - location.getBlockX() :
@@ -97,8 +99,11 @@ public class PlaneMonitor implements Monitor{
                         location1.getBlockZ() > location.getBlockZ() + w ? location1.getBlockZ() - location.getBlockZ() - w : 0;
                 y = location1.getBlockY() - location.getBlockY();
                 distance = (int) Math.sqrt(x * x + y * y + z * z);
+                break;
             default:
                 distance = 10000;
+                System.out.println(face.name());
+                break;
         }
         return distance;
     }

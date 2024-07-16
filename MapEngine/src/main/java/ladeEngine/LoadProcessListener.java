@@ -22,6 +22,7 @@ import java.util.Objects;
 public class LoadProcessListener implements Listener {
     @EventHandler
     public void onSwap(PlayerItemHeldEvent e){
+        if(e.getPlayer().getInventory().getItem(e.getNewSlot()) == null) return;
         if(e.getPlayer().getInventory().getItem(e.getNewSlot()).getType() != Material.FILLED_MAP) return;
         ItemMeta meta = Objects.requireNonNull(e.getPlayer().getInventory().getItem(e.getNewSlot())).getItemMeta();
         if(meta.getLore() != null && meta.getLore().size() >= 1){
@@ -48,42 +49,42 @@ public class LoadProcessListener implements Listener {
             public void run() {
                 ArrayList<Player> players = BasicTools.getOnlinePlayers();
                 for (int i = 0; i < players.size(); i++) {
-                    ArrayList<PlaneMonitor> monitors = PlaneMonitorManager.getNearMonitor(players.get(i).getLocation(),MapEngine.loadRange);
-                    ArrayList<RunningProcess> rps = ((RunningProcessType)MapEngine.datasManager.search(players.get(i).getName()).search("running")).v;
-                    if(monitors.size() == rps.size()) continue;
+                    ArrayList<PlaneMonitor> monitors = PlaneMonitorManager.getNearMonitor(players.get(i).getLocation(), MapEngine.loadRange);
+                    System.out.println("Near Monitors: " + monitors.size());
+                    ArrayList<RunningProcess> rps = ((RunningProcessType) MapEngine.datasManager.search(players.get(i).getName()).search("running")).v;
+
                     for (int j = 0; j < rps.size(); j++) {
-                        if(rps.get(j).plane == null) continue;
-                        if(!containA(monitors,rps.get(j).plane)){
+                        if (rps.get(j).plane == null || !containA(monitors, rps.get(j).plane)) {
                             rps.remove(j);
                             j--;
                         }
                     }
-                    if(monitors.size() == rps.size()) continue;
                     for (int j = 0; j < monitors.size(); j++) {
-                        if(!containB(rps,monitors.get(j))){
+                        if (!containB(rps, monitors.get(j))) {
                             Application app = monitors.get(j).appBase.getApplication();
-                            rps.add(new RunningProcess(players.get(i),app,monitors.get(j)));
+                            RunningProcess rp = new RunningProcess(players.get(i), app, monitors.get(j));
+                            rps.add(rp);
                             app.onEnable();
-                            RunningProcess rp = rps.get(rps.size());
                             rp.renderProcess.update(rp.appData.maps.get(0));
-                            rp.renderProcess.pushImage(rp.player,rp.hold);
+                            rp.renderProcess.pushImage(rp.player, rp.plane);
                         }
                     }
                 }
             }
-        }.runTaskTimerAsynchronously(MapEngine.getPlugin(MapEngine.class),2000L,2000L);
+        }.runTaskTimerAsynchronously(MapEngine.getPlugin(MapEngine.class),200L,200L);
     }
-    private static boolean containA(ArrayList<PlaneMonitor> a,PlaneMonitor b){
-        for (int i = 0; i < a.size(); i++) {
-            if(a.get(i).location.equals(b.location)){
+    private static boolean containA(ArrayList<PlaneMonitor> a, PlaneMonitor b) {
+        for (PlaneMonitor monitor : a) {
+            if (monitor.location.equals(b.location)) {
                 return true;
             }
         }
         return false;
     }
-    private static boolean containB(ArrayList<RunningProcess> a,PlaneMonitor b){
-        for (int i = 0; i < a.size(); i++) {
-            if (a.get(i).plane.location.equals(b.location)) {
+
+    private static boolean containB(ArrayList<RunningProcess> a, PlaneMonitor b) {
+        for (RunningProcess process : a) {
+            if (process.plane.location.equals(b.location)) {
                 return true;
             }
         }

@@ -18,7 +18,8 @@ public class JoinE implements Listener {
         if(s == null){
             data = MapEngine.datasManager.newData();
         }else {
-            data = new PlayerData(MapEngine.datasManager.baseData);
+            data = MapEngine.datasManager.newData();
+            //data = new PlayerData(MapEngine.datasManager.baseData);
             data.load(s);
         }
         data.player = e.getPlayer();

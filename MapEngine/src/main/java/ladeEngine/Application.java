@@ -3,6 +3,7 @@ package ladeEngine;
 import ladeEngine.Event.EventManager;
 import ladeEngine.PlayerData.types.BoolType;
 import ladeEngine.PlayerData.types.LocationType;
+import ladeEngine.PlayerData.types.StringType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -60,6 +61,7 @@ public abstract class Application {
             player.closeInventory();
         }else{
             ((BoolType)MapEngine.datasManager.search(player.getName()).search("setUpEnable")).v = true;
+            ((StringType)MapEngine.datasManager.search(player.getName()).search("setUpApp")).v = name;
             player.closeInventory();
             player.sendMessage(ChatColor.AQUA+"Please Click First Map Block");
         }

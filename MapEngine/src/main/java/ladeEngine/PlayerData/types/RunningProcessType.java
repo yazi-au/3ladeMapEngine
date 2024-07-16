@@ -7,7 +7,7 @@ import ladeEngine.RunningProcess;
 import java.util.ArrayList;
 
 public class RunningProcessType extends DataValue {
-    public ArrayList<RunningProcess> v;
+    public ArrayList<RunningProcess> v = new ArrayList<>();
     public RunningProcessType(String name, ArrayList<RunningProcess> value, boolean save){
         super.name = name;
         super.noSave = !save;
