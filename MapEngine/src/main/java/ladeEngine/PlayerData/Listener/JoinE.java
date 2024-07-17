@@ -16,12 +16,12 @@ public class JoinE implements Listener {
         ArrayList<String> s = GlobalFileTool.read(new File(MapEngine.datasManager.path + e.getPlayer().getName()));
         PlayerData data;
         if(s == null){
-            data = MapEngine.datasManager.newData();
+            data = MapEngine.datasManager.newData(e.getPlayer());
         }else {
             data = new PlayerData(MapEngine.datasManager.baseData);
             data.load(s);
         }
         data.player = e.getPlayer();
-        MapEngine.datasManager.datas.add(data);
+        MapEngine.datasManager.datas.put(e.getPlayer(),data);
     }
 }

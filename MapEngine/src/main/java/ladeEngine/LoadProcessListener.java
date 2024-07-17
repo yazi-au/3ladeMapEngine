@@ -36,7 +36,7 @@ public class LoadProcessListener implements Listener {
                     app2.onEnable();
                     rp.renderProcess.update(rp.appData.maps.get(0));
                     rp.renderProcess.pushImage(rp.player,rp.monitor,null);
-                    ((RunningProcessListType) MapEngine.datasManager.search(e.getPlayer().getName()).search("running")).v.add(rp);
+                    ((RunningProcessListType) MapEngine.datasManager.search(e.getPlayer()).search("running")).v.add(rp);
                 }else{
                     System.out.println("null");
                 }
@@ -51,7 +51,7 @@ public class LoadProcessListener implements Listener {
                 ArrayList<Player> players = BasicTools.getOnlinePlayers();
                 for (Player player : players) {
                     ArrayList<PlaneMonitor> monitors = PlaneMonitorManager.getNearMonitor(player.getLocation(), MapEngine.loadRange);
-                    ArrayList<RunningProcess> rps = ((RunningProcessListType) MapEngine.datasManager.search(player.getName()).search("running")).v;
+                    ArrayList<RunningProcess> rps = ((RunningProcessListType) MapEngine.datasManager.search(player).search("running")).v;
                     rps.removeIf(rp -> !containA(monitors, rp.monitor) && shouldRemove(player, rp));
                     for (PlaneMonitor monitor : monitors) {
                         if (!containB(rps, monitor)) {

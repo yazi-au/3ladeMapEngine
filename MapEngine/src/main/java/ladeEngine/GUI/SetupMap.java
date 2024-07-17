@@ -29,7 +29,7 @@ public class SetupMap implements Listener {
         Player player = event.getPlayer();
         Entity clickedBlock = event.getRightClicked();
         if (clickedBlock != null && clickedBlock.getType().equals(EntityType.ITEM_FRAME)) {
-            PlayerData data = MapEngine.datasManager.search(player.getName());
+            PlayerData data = MapEngine.datasManager.search(player);
             ItemFrame itemFrame = (ItemFrame) clickedBlock;
             ItemStack item = itemFrame.getItem();
             if (item.getType() == Material.FILLED_MAP) {
@@ -55,7 +55,7 @@ public class SetupMap implements Listener {
                         int minZ = Math.min(start.getBlockZ(), end.getBlockZ());
                         int maxZ = Math.max(start.getBlockZ(), end.getBlockZ());
                         PlaneMonitor monitor = new PlaneMonitor(start.getChunk().getX(),start.getChunk().getZ(),MapEngine.apps.get(0));
-                        monitor.appBase = MapEngine.searchApp(((StringType)MapEngine.datasManager.search(player.getName()).search("setUpApp")).v);
+                        monitor.appBase = MapEngine.searchApp(((StringType)MapEngine.datasManager.search(player).search("setUpApp")).v);
                         monitor.face = itemFrame.getAttachedFace();
                         monitor.location = new Location(start.getWorld(),minX,maxY,minZ);
                         if(maxX-minX == 0){

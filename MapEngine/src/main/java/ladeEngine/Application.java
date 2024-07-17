@@ -42,7 +42,7 @@ public abstract class Application {
         lore.add(ChatColor.DARK_GRAY + "Description: "+description);
         lore.add(ChatColor.DARK_GRAY + "Version: "+version);
         lore.add(ChatColor.DARK_GRAY + "Author: "+author);
-        lore.add(ChatColor.DARK_GRAY + "-[3lade Map Engine ladeEngine Application]-");
+        lore.add("-[3lade Map Engine Application]-");
         lore.add(""+ID);
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -60,8 +60,8 @@ public abstract class Application {
             player.sendMessage("Application was installed on your main hand map");
             player.closeInventory();
         }else{
-            ((BoolType)MapEngine.datasManager.search(player.getName()).search("setUpEnable")).v = true;
-            ((StringType)MapEngine.datasManager.search(player.getName()).search("setUpApp")).v = name;
+            ((BoolType)MapEngine.datasManager.search(player).search("setUpEnable")).v = true;
+            ((StringType)MapEngine.datasManager.search(player).search("setUpApp")).v = name;
             player.closeInventory();
             player.sendMessage(ChatColor.AQUA+"Please Click First Map Block");
         }

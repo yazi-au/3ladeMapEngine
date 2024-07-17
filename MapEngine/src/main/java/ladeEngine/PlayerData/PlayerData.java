@@ -1,52 +1,51 @@
 package ladeEngine.PlayerData;
 
-import ladeEngine.MapEngine;
 import ladeEngine.Utils.GlobalFileTool;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PlayerData {
     public Player player;
-    public Block block;
     public boolean dontSave;
-    public ArrayList<String> saveData = new ArrayList<>();
-    public ArrayList<DataValue> datas = new ArrayList<>();
-    public PlayerData(ArrayList<DataValue> datas){
-        this.datas = datas;
-    }
-    public void save(File file){
-        if(dontSave){
-            return;
-        }
-        for (int i = 0; i < datas.size(); i++) {
-            if(datas.get(i).noSave){
-                continue;
-            }
-            saveData.add(datas.get(i).getSaveData());
-        }
-        GlobalFileTool.write(file,saveData);
-        saveData = new ArrayList<>();
-    }
-    public void load(ArrayList<String> data){
-        for (int i = 0; i < data.size(); i++) {
-            if(datas.get(i).noSave){
-                continue;
-            }
-            if(i > datas.size()){
-                return;
-            }
-            datas.get(i).loadData(data.get(i));
+    public HashMap<String, DataValue> playerData = new HashMap<>();
+
+    public PlayerData(ArrayList<DataValue> base){
+        for (DataValue data : base) {
+            playerData.put(data.name, data);
         }
     }
     public DataValue search(String name){
-        for (int i = 0; i < datas.size(); i++) {
-            if(datas.get(i).name.equals(name)){
-                return datas.get(i);
+        return playerData.get(name);
+    }
+    public void save(File file) {
+        if (dontSave) {
+            return;
+        }
+        ArrayList<String> saveData = new ArrayList<>();
+        for (DataValue data : playerData.values()) {
+            if (!data.noSave) {
+                saveData.add(data.getSaveData());
             }
         }
-        return null;
+        GlobalFileTool.write(file, saveData);
+    }
+
+    public void load(List<String> data) {
+        for (int i = 0; i < data.size(); i++) {
+            String name = data.get(i);
+            DataValue dataValue = playerData.get(name);
+            if (dataValue != null && !dataValue.noSave) {
+                dataValue.loadData(data.get(i));
+            }
+        }
+    }
+
+    public void clearData() {
+        playerData.clear();
     }
 }

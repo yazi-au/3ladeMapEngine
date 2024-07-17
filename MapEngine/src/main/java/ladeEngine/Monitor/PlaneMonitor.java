@@ -52,7 +52,6 @@ public class PlaneMonitor implements Monitor{
     }
 
     public void sort(){
-        System.out.println("w:"+w+"h:"+h);
         switch (face) {
             case SOUTH:
             case WEST:
@@ -102,7 +101,6 @@ public class PlaneMonitor implements Monitor{
                 break;
             default:
                 distance = 10000;
-                System.out.println(face.name());
                 break;
         }
         return distance;

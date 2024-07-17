@@ -2,6 +2,11 @@ package ladeEngine.Test;
 
 import ladeEngine.Application;
 import ladeEngine.GameMap;
+import ladeEngine.Render.GameObjects.ImageObject;
+import ladeEngine.Utils.BasicTools;
+import ladeEngine.Utils.M3IVector;
+
+import java.io.IOException;
 
 public class TestApplication extends Application {
     public TestApplication() {
@@ -18,6 +23,11 @@ public class TestApplication extends Application {
         System.out.println("TestApplication Start");
         GameMap map = new GameMap();
         maps.add(map);
+        try {
+            map.addObject(new ImageObject(BasicTools.readImage("D:\\bg.png"),new M3IVector(0,0,0)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

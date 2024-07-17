@@ -9,22 +9,26 @@ public class HoldCursor {
     public RunningProcess rp;
     public MapIcon.Type type = MapIcon.Type.a;
     private int x,y;
-    public byte rotation = 4;
-    public float sensitive = 0.6f;
+    private float lastYaw,lastPitch;
+    public byte rotation = 2;
+    public float sensitive = 2.6f;
     public HoldCursor(RunningProcess rp){
         this.rp = rp;
     }
     //{OLDX,OLDY,X,Y}
-    public int[] move(float lastYaw, float lastPitch, float yaw, float pitch) {
+    public int[] move(float yaw, float pitch) {
         int[] r = new int[]{x, y, 0, 0};
         float deltaYaw = ((yaw - lastYaw) + 540) % 360 - 180;
-        float deltaPitch = ((pitch - lastPitch) + 540) % 360 - 180;
 
         x += sensitive * deltaYaw;
         x = Math.max(-127, Math.min(x, 127));
 
-        y += sensitive * deltaPitch;
-        if(pitch == 90) y = 127;
+        float pitchRange = 90 - 30;
+        float yRange = 127 - (-127);
+        float normalizedPitch = (pitch - 30) / pitchRange;
+        float interpolatedY = -127 + normalizedPitch * yRange;
+
+        y += sensitive * (interpolatedY - y);
         y = Math.max(-127, Math.min(y, 127));
 
         r[2] = x;
@@ -34,7 +38,9 @@ public class HoldCursor {
         e.lastY = r[1];
         e.x = r[2];
         e.y = r[3];
-        rp.eventManager.call("MouseMoveEvent",e);
+        lastYaw = yaw;
+        lastPitch = pitch;
+        rp.eventManager.call("MouseMoveEvent", e);
         return r;
     }
     public MapIcon getIcon(){

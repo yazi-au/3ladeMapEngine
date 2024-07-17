@@ -11,7 +11,7 @@ import java.io.File;
 public class QuitE implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e){
-        MapEngine.datasManager.search(e.getPlayer().getName()).save(new File(MapEngine.datasManager.path+e.getPlayer().getName()));
-        MapEngine.datasManager.delete(e.getPlayer().getName());
+        MapEngine.datasManager.search(e.getPlayer()).save(new File(MapEngine.datasManager.path+e.getPlayer().getName()));
+        MapEngine.datasManager.delete(e.getPlayer());
     }
 }

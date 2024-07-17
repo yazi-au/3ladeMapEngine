@@ -7,26 +7,27 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import ladeEngine.Monitor.CursorListener;
+import ladeEngine.Monitor.*;
 import ladeEngine.PlayerData.types.RunningProcessListType;
 import ladeEngine.PlayerData.types.StringType;
 import ladeEngine.Test.TestApplication;
 import ladeEngine.GUI.AppListCommand;
 import ladeEngine.GUI.GUIListener;
 import ladeEngine.GUI.SetupMap;
-import ladeEngine.Monitor.PlaneMonitorManager;
-import ladeEngine.Monitor.PlaneSaveListener;
 import ladeEngine.PlayerData.DatasManager;
 import ladeEngine.PlayerData.types.BoolType;
 import ladeEngine.PlayerData.types.LocationType;
 import ladeEngine.Utils.BasicTools;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.world.level.saveddata.maps.MapIcon;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public final class MapEngine extends JavaPlugin {
@@ -43,6 +44,7 @@ public final class MapEngine extends JavaPlugin {
         BasicTools.init();
         log = getLogger();
         log.info(ChatColor.AQUA + "3lade Map Engine launching......");
+        loadConfig();
         protocolManager = ProtocolLibrary.getProtocolManager();
         getCommand("meapps").setExecutor(new AppListCommand());
         getServer().getPluginManager().registerEvents(new GUIListener(),this);
@@ -50,7 +52,6 @@ public final class MapEngine extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlaneSaveListener(),this);
         getServer().getPluginManager().registerEvents(new LoadProcessListener(),this);
         getServer().getPluginManager().registerEvents(new CursorListener(),this);
-        saveDefaultConfig();
         path = getDataFolder()+"\\";
         PlaneMonitorManager.init();
         datasManager = new DatasManager(getDataFolder() + "\\players\\",this);
@@ -63,6 +64,7 @@ public final class MapEngine extends JavaPlugin {
         registerApp(new TestApplication());
         LoadProcessListener.monitorActiveTask(); //Run scan task
         blockDefaultPacket();
+        CursorMove();
     }
 
     @Override
@@ -78,25 +80,27 @@ public final class MapEngine extends JavaPlugin {
                 PacketContainer packet = event.getPacket();
                 byte scale = packet.getBytes().read(0);
                 int id = packet.getIntegers().read(0);
+
                 if (scale <= 4) {
-                    if (player.getInventory().getItemInMainHand().hasItemMeta() && player.getInventory().getItemInMainHand().getItemMeta().hasLore()) {
-                        if (player.getInventory().getItemInMainHand().getType().equals(Material.FILLED_MAP)) {
-                            if (player.getInventory().getItemInMainHand().getItemMeta().getLore().get(player.getInventory().getItemInMainHand().getItemMeta().getLore().size() - 1).startsWith("||")) {
-                                MapMeta mapMeta = (MapMeta) player.getInventory().getItemInMainHand().getItemMeta();
-                                if(mapMeta.getMapView().getId() == id) {
-                                    event.setCancelled(true);
-                                }
+                    ItemMeta mainHandMeta = player.getInventory().getItemInMainHand().getItemMeta();
+                    ItemMeta offHandMeta = player.getInventory().getItemInOffHand().getItemMeta();
+
+                    if (mainHandMeta != null && mainHandMeta.hasLore() && player.getInventory().getItemInMainHand().getType() == Material.FILLED_MAP) {
+                        if (mainHandMeta.getLore().get(mainHandMeta.getLore().size() - 1).startsWith("||")) {
+                            MapMeta mapMeta = (MapMeta) mainHandMeta;
+                            if (mapMeta.getMapView().getId() == id) {
+                                event.setCancelled(true);
+                                return;
                             }
                         }
                     }
 
-                    if (player.getInventory().getItemInOffHand().hasItemMeta() && player.getInventory().getItemInOffHand().getItemMeta().hasLore()) {
-                        if (player.getInventory().getItemInOffHand().getType().equals(Material.FILLED_MAP)) {
-                            if (player.getInventory().getItemInOffHand().getItemMeta().getLore().get(player.getInventory().getItemInOffHand().getItemMeta().getLore().size() - 1).startsWith("||")) {
-                                MapMeta mapMeta = (MapMeta) player.getInventory().getItemInMainHand().getItemMeta();
-                                if(mapMeta.getMapView().getId() == id) {
-                                    event.setCancelled(true);
-                                }
+                    if (offHandMeta != null && offHandMeta.hasLore() && player.getInventory().getItemInOffHand().getType() == Material.FILLED_MAP) {
+                        if (offHandMeta.getLore().get(offHandMeta.getLore().size() - 1).startsWith("||")) {
+                            MapMeta mapMeta = (MapMeta) mainHandMeta;
+                            if (mapMeta.getMapView().getId() == id) {
+                                event.setCancelled(true);
+                                return;
                             }
                         }
                     }
@@ -106,6 +110,40 @@ public final class MapEngine extends JavaPlugin {
             }
         });
     }
+
+
+    public void CursorMove() {
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Play.Client.LOOK) {
+            @Override
+            public void onPacketReceiving(PacketEvent e) {
+                float yaw = e.getPacket().getFloat().read(0);
+                float pitch = e.getPacket().getFloat().read(1);
+
+                if (!BasicTools.isLoreStartingWith(e.getPlayer(), "||")) {
+                    return;
+                }
+
+                DatasManager dataManager = MapEngine.datasManager;
+                RunningProcessListType runningProcesses = (RunningProcessListType) dataManager.search(e.getPlayer()).search("running");
+                ArrayList<RunningProcess> rps = runningProcesses.v;
+
+                for (RunningProcess rp : rps) {
+                    Monitor monitor = rp.monitor;
+                    if (monitor instanceof HoldMonitor) {
+                        HoldMonitor m = (HoldMonitor) monitor;
+                        HoldCursor cursor = m.cursor;
+                        if (cursor != null) {
+                            cursor.move(yaw, pitch);
+                            ArrayList<MapIcon> icons = new ArrayList<>();
+                            icons.add(cursor.getIcon());
+                            rp.renderProcess.pushImage(e.getPlayer(), monitor, icons);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
 
     public static Application searchApp(String name){
         for (int i = 0; i < apps.size(); i++) {
@@ -124,5 +162,11 @@ public final class MapEngine extends JavaPlugin {
         if(app != null){
             apps.remove(app);
         }
+    }
+
+    public void loadConfig(){
+        saveDefaultConfig();
+        loadRange = getConfig().getInt("Optimize.KeepDataRange");
+        cantRotateMap = getConfig().getBoolean("Optimize.CantRotateFullMap");
     }
 }

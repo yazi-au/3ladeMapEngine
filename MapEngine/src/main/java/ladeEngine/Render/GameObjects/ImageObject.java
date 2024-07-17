@@ -1,15 +1,22 @@
 package ladeEngine.Render.GameObjects;
 
 import ladeEngine.GameObject;
+import ladeEngine.Utils.M3IVector;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class ImageObject extends GameObject {
-    BufferedImage image;
-    int width,height;
-    int rotate;
+    public BufferedImage image;
+    public int width,height;
+    public int rotate;
+    public ImageObject(BufferedImage image, M3IVector location){
+        this.image = image;
+        this.width = image.getWidth();
+        this.height = image.getHeight();
+        this.location = location;
+    }
     @Override
     public void draw(BufferedImage frame, Graphics2D graphics) {
         double radians = Math.toRadians(rotate);
